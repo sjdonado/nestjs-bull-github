@@ -1,6 +1,6 @@
 import { Controller, Get, Query, ValidationPipe } from '@nestjs/common';
 
-import { GithubDataService } from 'src/github-data/github-data.service';
+import { GithubDataService } from '@src/github-data/github-data.service';
 import { TopRatedSearchDto } from './dto/top-rated-search.dto';
 
 @Controller('search')
