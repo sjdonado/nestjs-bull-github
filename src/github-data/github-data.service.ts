@@ -3,7 +3,7 @@ import { DateTime, Interval } from 'luxon';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Queue } from 'bull';
@@ -29,7 +29,7 @@ export class GithubDataService {
   ): Promise<GithubRepository[]> {
     const repos = await this.githubRepository.find({
       where: {
-        language,
+        language: Like(`%${language}%`),
         reportDate: date,
       },
       take: limit,
@@ -45,14 +45,8 @@ export class GithubDataService {
       day: 18,
     });
 
-    const endDate = DateTime.fromObject({
-      year: 2018,
-      month: 12,
-      day: 19,
-    });
-
     // Get yesterday's date
-    // const endDate = DateTime.local().minus({ days: 1 });
+    const endDate = DateTime.local().minus({ days: 1 });
 
     const intervals = Interval.fromDateTimes(
       startDate.startOf('day'),

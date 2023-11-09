@@ -1,6 +1,5 @@
 import axios from 'axios';
 import * as csvParser from 'csv-parser';
-import { DateTime } from 'luxon';
 
 import { Logger } from '@nestjs/common';
 
