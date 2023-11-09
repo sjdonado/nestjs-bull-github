@@ -31,8 +31,8 @@ import { TopRatedSearchModule } from './top-rated-search/top-rated-search.module
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         redis: {
-          host: configService.get('QUEUE_HOST'),
-          port: configService.get('QUEUE_PORT'),
+          host: configService.get('REDIS_QUEUE_HOST'),
+          port: configService.get('REDIS_QUEUE_PORT'),
         },
       }),
       inject: [ConfigService],

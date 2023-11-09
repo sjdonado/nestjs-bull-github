@@ -12,7 +12,7 @@ export class GithubRepository extends BaseEntity {
   item: string;
 
   @Column({ name: 'repo_name', type: 'varchar', length: 255 })
-  repo_name: string;
+  repoName: string;
 
   @Column({ name: 'stars', type: 'int' })
   stars: number;
@@ -20,11 +20,11 @@ export class GithubRepository extends BaseEntity {
   @Column({ name: 'forks', type: 'int' })
   forks: number;
 
-  @Column({ name: 'language', type: 'varchar', length: 255 })
+  @Column({ name: 'language', type: 'varchar', length: 255, nullable: false })
   language: string;
 
   @Column({ name: 'repo_url', type: 'varchar', length: 255 })
-  repo_url: string;
+  repoUrl: string;
 
   @Column({ name: 'username', type: 'varchar', length: 255 })
   username: string;
@@ -33,8 +33,11 @@ export class GithubRepository extends BaseEntity {
   issues: number;
 
   @Column({ name: 'last_commit', type: 'varchar', length: 255 })
-  last_commit: string;
+  lastCommit: string;
 
   @Column({ name: 'description', type: 'text' })
   description: string;
+
+  @Column({ name: 'report_date', type: 'date', nullable: false })
+  reportDate: string;
 }

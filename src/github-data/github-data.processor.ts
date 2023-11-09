@@ -1,5 +1,6 @@
-import got from 'got';
-import csvParser from 'csv-parser';
+import axios from 'axios';
+import * as csvParser from 'csv-parser';
+import { DateTime } from 'luxon';
 
 import { Logger } from '@nestjs/common';
 
@@ -21,36 +22,36 @@ export class GithubDownloadProcessor {
   ) {}
 
   @Process('download-csv')
-  async downloadAndParse(job: Job<{ csvUrl: string }>) {
-    this.logger.debug('Start downloading and parsing CSV...');
-    this.logger.debug(job.data);
+  async downloadAndParse(job: Job<{ csvUrl: string; isoDate: string }>) {
+    const { csvUrl, isoDate } = job.data;
+    this.logger.debug(`Job started ${isoDate}`);
 
-    const { csvUrl } = job.data;
     try {
-      const response = got.stream(csvUrl);
-      const parseStream = response.pipe(csvParser());
+      const response = await axios.get(csvUrl, { responseType: 'stream' });
+      const parseStream = response.data.pipe(csvParser());
 
       for await (const row of parseStream) {
         const repo = this.githubRepository.create({
           rank: row.rank,
           item: row.item,
-          repo_name: row.repo_name,
+          repoName: row.repo_name,
           stars: row.stars,
           forks: row.forks,
           language: row.language,
-          repo_url: row.repo_url,
+          repoUrl: row.repo_url,
           username: row.username,
           issues: row.issues,
-          last_commit: row.last_commit,
+          lastCommit: row.last_commit,
           description: row.description,
+          reportDate: isoDate,
         });
 
         await this.githubRepository.save(repo);
       }
 
-      this.logger.debug('Downloaded and parsed CSV from ' + csvUrl);
+      this.logger.debug(`Downloaded and parsed CSV ${isoDate}`);
     } catch (error) {
-      this.logger.error(`Error downloading CSV from ${csvUrl}: ${error.message}`);
+      this.logger.error(`Error downloading CSV ${isoDate}: ${error.message}`);
     }
   }
 }

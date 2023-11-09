@@ -9,9 +9,13 @@ export class TopRatedSearchController {
 
   @Get()
   async getReposRanking(@Query(ValidationPipe) query: TopRatedSearchDto) {
-    const { language, limit } = query;
+    const { language, limit, date } = query;
 
-    const repos = await this.githubDataService.getReposByLanguage(language, limit);
+    const repos = await this.githubDataService.getReposByLanguageAndDate(
+      language,
+      date,
+      limit
+    );
 
     return repos;
   }
