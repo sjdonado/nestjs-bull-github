@@ -2,6 +2,7 @@ import { Logger, Module, OnModuleInit } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { BullModule } from '@nestjs/bull';
 
 import { EntityManager } from 'typeorm';
 
@@ -24,6 +25,16 @@ import { TopRatedSearchModule } from './top-rated-search/top-rated-search.module
           synchronize: true,
         }) as TypeOrmModuleOptions,
 
+      inject: [ConfigService],
+    }),
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        redis: {
+          host: configService.get('QUEUE_HOST'),
+          port: configService.get('QUEUE_PORT'),
+        },
+      }),
       inject: [ConfigService],
     }),
     GithubDataModule,
